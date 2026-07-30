@@ -20,7 +20,7 @@ class HabitSerializer(serializers.ModelSerializer):
     current_streak = serializers.SerializerMethodField()
     class Meta:
         model = Habit
-        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user']
+        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user', 'current_streak']
 
         extra_kwargs = {
             'id': {'read_only' : True},
@@ -29,7 +29,7 @@ class HabitSerializer(serializers.ModelSerializer):
         }
 
     def get_current_streak(self, obj):
-        logs = obj.logs.order_by('-created_at')
+        logs = obj.logs.order_by('-completed_at')
 
         if not logs:
             return 0
@@ -53,7 +53,7 @@ class HabitSerializer(serializers.ModelSerializer):
 
 class HabitLogSerializer(serializers.ModelSerializer):
     color = serializers.CharField(source='habit.color', read_only = True)
-    habit_name = serializers.CharField(source='habit.name', read_only = True)
+    habit_name = serializers.CharField(source='habit.title', read_only = True)
 
     class Meta:
         model = HabitLog
