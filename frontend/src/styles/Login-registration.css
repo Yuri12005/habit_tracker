@@ -1,0 +1,42 @@
+.split-page{
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; 
+}
+
+.text-section{
+    flex:1;
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom right, #4A3AFF, #443b81);
+    color: white;
+}
+
+.text-header{
+    font-family: "Poppins", sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+.text-paragraph{
+    font-family: "Poppins", sans-serif;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.background-form{
+    flex: 1;
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; 
+    background-color: #F8F9FA;
+}
