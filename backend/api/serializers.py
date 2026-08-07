@@ -18,9 +18,10 @@ class UserSerializer(serializers.ModelSerializer):
     
 class HabitSerializer(serializers.ModelSerializer):
     current_streak = serializers.SerializerMethodField()
+    today_log_id = serializers.SerializerMethodField()
     class Meta:
         model = Habit
-        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user', 'current_streak']
+        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user', 'current_streak', 'today_log_id']
 
         extra_kwargs = {
             'id': {'read_only' : True},
@@ -49,6 +50,14 @@ class HabitSerializer(serializers.ModelSerializer):
             else:
                 break
         return streak
+
+    def get_today_log_id(self, obj):
+        today = date.today()
+        log = obj.logs.filter(completed_at=today).first()
+        
+        if log:
+            return log.id
+        return None
 
 
 class HabitLogSerializer(serializers.ModelSerializer):

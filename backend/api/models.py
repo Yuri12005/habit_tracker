@@ -17,7 +17,7 @@ class Habit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habits')
     
     def __str__(self):
-        return f"{self.id} - {self.name}"
+        return f"{self.id} - {self.title}"
 
 class HabitLog(models.Model):
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name='logs')
