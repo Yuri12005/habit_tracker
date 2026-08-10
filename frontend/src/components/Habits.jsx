@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import { useNavigate, Link } from "react-router-dom";
+import deleteIcon from '../assets/delete.png'; 
+import "../styles/Habits.css";
 
 function Habit({habit, onDelete, onUpdate}){
     const[completedToday, setCompletedToday] = useState(habit.today_log_id ? true : false)
@@ -44,17 +46,18 @@ function Habit({habit, onDelete, onUpdate}){
 
     return(
         <div className="single-habit">
-            <p className="habitColor" style={{color:habit.color}}>
+            <button className="update-habit-button" title="Update habit">✏️</button>
+            <p className="habit-title" style={{color:habit.color}}>
                 {habit.title}
             </p>
             <p className="habit-streak">
                 {habit.current_streak}
             </p>
-            <button className="delete-habit-button" onClick={()=>{onDelete(habit.id)}}>
-                ❌
-            </button>
-            <button className="habit-log-button" onClick={()=>{handleLogHabit(completedToday)}} disabled={loading}>
+            <button className="habit-log-button" title="Log habit" onClick={()=>{handleLogHabit(completedToday)}} disabled={loading}>
                 {completedToday ? '❤️' : '🩶'}
+            </button>
+            <button className="delete-habit-button" onClick={()=>{onDelete(habit.id)}}>
+                <img src={deleteIcon} alt="Delete habit" />
             </button>
         </div>
     )
@@ -90,7 +93,10 @@ function HabitsList(){
 
     return (
         <div className="habits-container">
-            <h1>MY HABITS</h1>
+            <div className="habits-header-row">
+            <h1 className="habits-header">MY HABITS</h1>
+            <button className="add-habit-button">Add New Habit</button>
+            </div>
             <div className="habits-list">
                 {habits.map((habit)=>(
                     <Habit key={habit.id} habit={habit} onDelete={deleteHabit} onUpdate={getHabits}/>

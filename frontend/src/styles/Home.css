@@ -1,0 +1,51 @@
+.home-page-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px; 
+  width: 100%;
+  padding: 0 20px;
+  margin: 40px auto;
+}
+
+.top-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.username-text{
+    font-family: "Inter", sans-serif;
+    font-size: 24px; 
+    font-weight: 500; 
+    margin-left: 12px;
+    text-transform: capitalize;
+}
+
+.logout-button{
+    padding: 10px 20px; 
+    background-color: #4A3AFF;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px; 
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #3B28CC;
+    box-shadow: 0 4px 12px rgba(74, 58, 255, 0.25);
+}
+
+.logout-button:active {
+    transform: scale(0.96);
+    box-shadow: none;
+}

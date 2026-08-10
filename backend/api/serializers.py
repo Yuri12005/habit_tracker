@@ -40,6 +40,9 @@ class HabitSerializer(serializers.ModelSerializer):
 
         if logs.first().completed_at not in [check_date, check_date-timedelta(days=1)]:
             return 0
+
+        if logs.first().completed_at == check_date - timedelta(days=1):
+            check_date -= timedelta(days=1)
         
         for log in logs:
             if log.completed_at == check_date:

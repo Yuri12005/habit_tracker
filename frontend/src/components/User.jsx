@@ -19,9 +19,7 @@ function User(){
     };
 
     return( 
-        <div className="username-container">
-            <h1 className="username-text">{username}</h1>
-        </div>
+        <h1 className="username-text">{username}</h1>
     )
 }
 

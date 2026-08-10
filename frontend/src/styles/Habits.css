@@ -1,0 +1,132 @@
+.habits-container{
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.habits-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.habits-header{
+    color: #1E1B4B;
+    font-family: "Poppins", sans-serif;
+    font-size: 24px; 
+    font-weight: 700; 
+    margin: 0;
+    text-transform: uppercase; 
+    text-align: center;
+}
+
+.add-habit-button{
+    position: absolute;
+    right: 0;
+    padding: 10px 20px; 
+    background-color: #2d1bfa;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px; 
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;   
+}
+
+.add-habit-button:hover {
+    background-color: #200bc2;
+    box-shadow: 0 4px 12px rgba(74, 58, 255, 0.25);
+}
+
+.add-habit-button:active {
+    transform: scale(0.96);
+    box-shadow: none;
+}
+
+.habits-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.single-habit{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: none;
+    background-color: #F4F5F7;
+    transition: background-color 0.2s ease;
+}
+
+.single-habit:hover {
+    background-color: #E5E7EB;
+}
+
+.habit-title{
+    font-family: "Inter", sans-serif;
+    font-size: 16px; 
+    font-weight: 700;
+    flex: 1;
+    margin-left: 16px;
+}
+
+.habit-streak{
+    font-family: "Inter", sans-serif;
+    font-size: 16px; 
+    font-weight: 700;
+    margin-right: 16px;
+}
+
+.habit-log-button, .update-habit-button{
+    background-color: transparent;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.delete-habit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background-color: #EF4444;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.delete-habit-button:hover {
+    background-color: #DC2626;
+}
+
+.delete-habit-button:active {
+    transform: scale(0.92);
+}
+
+.delete-habit-button img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}
