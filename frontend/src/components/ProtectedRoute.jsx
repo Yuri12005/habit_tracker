@@ -8,7 +8,10 @@ function ProtectedRoute({children}){
     const [isAuthorized, setIsAuthorized] = useState(null)
 
     useEffect(()=>{
-        auth().catch(()=>setIsAuthorized(false))
+        auth().catch(()=>{
+            localStorage.clear();
+            setIsAuthorized(false);
+        })
     },[])
 
     const refreshToken = async() => {
@@ -22,10 +25,12 @@ function ProtectedRoute({children}){
                 setIsAuthorized(true)
             }
             else{
+                localStorage.clear();
                 setIsAuthorized(false)
             }
         } catch(error){
             console.log(error)
+            localStorage.clear()
             setIsAuthorized(false)
         }
     }
@@ -33,6 +38,7 @@ function ProtectedRoute({children}){
     const auth = async () => {
         const token = localStorage.getItem(ACCESS_TOKEN)
         if(!token){
+            localStorage.clear();
             setIsAuthorized(false)
             return
         }

@@ -50,7 +50,7 @@ function Habit({habit, onDelete, onUpdate}){
             <p className="habit-title" style={{color:habit.color}}>
                 {habit.title}
             </p>
-            <p className="habit-streak">
+            <p className="habit-streak" title="Habit streak">
                 {habit.current_streak}
             </p>
             <button className="habit-log-button" title="Log habit" onClick={()=>{handleLogHabit(completedToday)}} disabled={loading}>
@@ -65,6 +65,7 @@ function Habit({habit, onDelete, onUpdate}){
 
 function HabitsList(){
     const [habits, setHabits] = useState([])
+    const navigate = useNavigate()
 
     useEffect(()=>{
         getHabits();
@@ -95,7 +96,7 @@ function HabitsList(){
         <div className="habits-container">
             <div className="habits-header-row">
             <h1 className="habits-header">MY HABITS</h1>
-            <button className="add-habit-button">Add New Habit</button>
+            <button className="add-habit-button" onClick={()=>{navigate('/create-habit')}}>Add New Habit</button>
             </div>
             <div className="habits-list">
                 {habits.map((habit)=>(

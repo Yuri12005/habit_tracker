@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import Home from './pages/Home'
+import CreateHabit from './pages/CreateHabit'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function Logout(){
@@ -31,6 +32,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />}/>
         <Route path="/register" element={<RegisterAndLogout />} />
+        <Route 
+          path="create-habit"
+          element = {
+            <ProtectedRoute>
+              <CreateHabit />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

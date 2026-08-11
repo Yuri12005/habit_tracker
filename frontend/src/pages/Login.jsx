@@ -1,6 +1,12 @@
 import Form from "../components/Form"
+import { useEffect } from "react";
+import '../styles/Login-registration.css'
 
 function Login(){
+    useEffect(() => {
+            localStorage.clear();
+        }, []);
+
     return( 
     <div className="split-page">
         <div className="text-section">
