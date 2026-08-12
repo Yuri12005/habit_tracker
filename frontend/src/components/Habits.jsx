@@ -8,6 +8,7 @@ function Habit({habit, onDelete, onUpdate}){
     const[completedToday, setCompletedToday] = useState(habit.today_log_id ? true : false)
     const[loading, setLoading] = useState(false)
     const[logId, setLogId] = useState(habit.today_log_id || null)
+    const navigate = useNavigate()
 
     const handleLogHabit = async (isCompleted) =>{
         setLoading(true);
@@ -44,9 +45,13 @@ function Habit({habit, onDelete, onUpdate}){
         }
     }
 
+    const goToUpdate = () =>{
+        navigate(`/edit-habit/${habit.id}`, {state: {method: 'Update', habit: habit}});
+    }
+
     return(
         <div className="single-habit">
-            <button className="update-habit-button" title="Update habit">✏️</button>
+            <button className="update-habit-button" title="Update habit" onClick={goToUpdate}>✏️</button>
             <p className="habit-title" style={{color:habit.color}}>
                 {habit.title}
             </p>
@@ -92,11 +97,15 @@ function HabitsList(){
         }
     }
 
+    const goToCreate = () =>{
+        navigate('/create-habit',{state:{method: "Create"}})
+    }
+
     return (
         <div className="habits-container">
             <div className="habits-header-row">
             <h1 className="habits-header">MY HABITS</h1>
-            <button className="add-habit-button" onClick={()=>{navigate('/create-habit')}}>Add New Habit</button>
+            <button className="add-habit-button" onClick={goToCreate}>Add New Habit</button>
             </div>
             <div className="habits-list">
                 {habits.map((habit)=>(

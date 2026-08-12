@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import Home from './pages/Home'
 import CreateHabit from './pages/CreateHabit'
+import EditHabit from './pages/EditHabit'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function Logout(){
@@ -33,10 +34,18 @@ function App() {
         <Route path="/logout" element={<Logout />}/>
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route 
-          path="create-habit"
+          path="/create-habit"
           element = {
             <ProtectedRoute>
               <CreateHabit />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/edit-habit/:id"
+          element = {
+            <ProtectedRoute>
+              <EditHabit />
             </ProtectedRoute>
           }
         />
