@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, ChangeEvent } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../assets/delete.png';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
+import { debounce } from '../functions/functions';
 
 interface HabitProps {
   habit: IHabit;
@@ -101,11 +102,12 @@ function Habit({ habit, onDelete, onUpdate }: HabitProps) {
 
 function HabitsList() {
   const [habits, setHabits] = useState<IHabit[]>([]);
+  const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
-  const getHabits = async () => {
+  const getHabits = async (searchQuery: string = '') => {
     try {
-      const res = await api.get('/api/habits/');
+      const res = await api.get(`/api/habits/?search=${searchQuery}`);
       setHabits(res.data);
     } catch (error) {
       console.log(error);
@@ -128,13 +130,32 @@ function HabitsList() {
     navigate('/create-habit', { state: { method: 'Create' } });
   };
 
+  const handleSearch = useMemo(
+    () =>
+      debounce((searchQuery: string) => {
+        getHabits(searchQuery);
+      }, 500),
+    []
+  );
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    handleSearch(e.target.value);
+  };
+
   useEffect(() => {
-    getHabits();
+    getHabits('');
   }, []);
 
   return (
     <div className="habits-container">
       <div className="habits-header-row">
+        <input
+          type="text"
+          value={query}
+          onChange={handleChange}
+          placeholder="Search"
+        />
         <h1 className="habits-header">MY HABITS</h1>
         <button className="add-habit-button" onClick={goToCreate}>
           Add New Habit
@@ -146,7 +167,9 @@ function HabitsList() {
             key={habit.id}
             habit={habit}
             onDelete={deleteHabit}
-            onUpdate={getHabits}
+            onUpdate={() => {
+              getHabits(query);
+            }}
           />
         ))}
       </div>

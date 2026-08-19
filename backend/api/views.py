@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
+from rest_framework import generics, filters
 from .serializers import UserSerializer, HabitSerializer, HabitLogSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
@@ -9,6 +9,8 @@ from .models import Habit, HabitLog
 class HabitListCreate(generics.ListCreateAPIView):
     serializer_class = HabitSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
 
     def get_queryset(self):
         user = self.request.user
