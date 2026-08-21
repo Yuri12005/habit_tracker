@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../assets/delete.png';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
-import { debounce } from '../functions/functions';
+import { useDebounce } from '../customHooks/hooks';
 
 interface HabitProps {
   habit: IHabit;
@@ -103,6 +103,7 @@ function Habit({ habit, onDelete, onUpdate }: HabitProps) {
 function HabitsList() {
   const [habits, setHabits] = useState<IHabit[]>([]);
   const [query, setQuery] = useState('');
+  const debouncedSearch = useDebounce(query);
   const navigate = useNavigate();
 
   const getHabits = async (searchQuery: string = '') => {
@@ -130,27 +131,19 @@ function HabitsList() {
     navigate('/create-habit', { state: { method: 'Create' } });
   };
 
-  const handleSearch = useMemo(
-    () =>
-      debounce((searchQuery: string) => {
-        getHabits(searchQuery);
-      }, 500),
-    []
-  );
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    handleSearch(e.target.value);
   };
 
   useEffect(() => {
-    getHabits('');
-  }, []);
+    getHabits(debouncedSearch);
+  }, [debouncedSearch]);
 
   return (
     <div className="habits-container">
       <div className="habits-header-row">
         <input
+          className="search-bar"
           type="text"
           value={query}
           onChange={handleChange}
@@ -168,17 +161,23 @@ function HabitsList() {
             habit={habit}
             onDelete={deleteHabit}
             onUpdate={() => {
-              getHabits(query);
+              getHabits(debouncedSearch);
             }}
           />
         ))}
       </div>
 
-      {habits.length === 0 && (
+      {habits.length === 0 && debouncedSearch === '' && (
         <>
           <p className="no-habits-text">You don't have any habits yet</p>
           <p className="no-habits-text">Let's create your first habit</p>
         </>
+      )}
+
+      {habits.length === 0 && debouncedSearch !== '' && (
+        <p className="no-habits-text">
+          No results found for '{debouncedSearch}'
+        </p>
       )}
     </div>
   );
