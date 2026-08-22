@@ -5,16 +5,18 @@ from .serializers import UserSerializer, HabitSerializer, HabitLogSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
 from .models import Habit, HabitLog
+from .pagination import CustomPagination
 
 class HabitListCreate(generics.ListCreateAPIView):
     serializer_class = HabitSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title']
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
-        return Habit.objects.filter(user=user, is_active = True)
+        return Habit.objects.filter(user=user, is_active = True).order_by('-created_at')
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -1,10 +1,9 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../assets/delete.png';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
-import { useDebounce } from '../customHooks/hooks';
 
 interface HabitProps {
   habit: IHabit;
@@ -12,7 +11,7 @@ interface HabitProps {
   onUpdate: () => void;
 }
 
-function Habit({ habit, onDelete, onUpdate }: HabitProps) {
+export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const [completedToday, setCompletedToday] = useState(
     habit.today_log_id ? true : false
   );
@@ -99,88 +98,3 @@ function Habit({ habit, onDelete, onUpdate }: HabitProps) {
     </div>
   );
 }
-
-function HabitsList() {
-  const [habits, setHabits] = useState<IHabit[]>([]);
-  const [query, setQuery] = useState('');
-  const debouncedSearch = useDebounce(query);
-  const navigate = useNavigate();
-
-  const getHabits = async (searchQuery: string = '') => {
-    try {
-      const res = await api.get(`/api/habits/?search=${searchQuery}`);
-      setHabits(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteHabit = async (id: number) => {
-    try {
-      const res = await api.delete(`/api/habits/${id}/`);
-      if (res.status === 204) {
-        alert('Habit deleted!');
-        setHabits(habits.filter((habit) => habit.id !== id));
-      }
-    } catch (error) {
-      alert('Error occured' + error);
-    }
-  };
-
-  const goToCreate = () => {
-    navigate('/create-habit', { state: { method: 'Create' } });
-  };
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  useEffect(() => {
-    getHabits(debouncedSearch);
-  }, [debouncedSearch]);
-
-  return (
-    <div className="habits-container">
-      <div className="habits-header-row">
-        <input
-          className="search-bar"
-          type="text"
-          value={query}
-          onChange={handleChange}
-          placeholder="Search"
-        />
-        <h1 className="habits-header">MY HABITS</h1>
-        <button className="add-habit-button" onClick={goToCreate}>
-          Add New Habit
-        </button>
-      </div>
-      <div className="habits-list">
-        {habits.map((habit) => (
-          <Habit
-            key={habit.id}
-            habit={habit}
-            onDelete={deleteHabit}
-            onUpdate={() => {
-              getHabits(debouncedSearch);
-            }}
-          />
-        ))}
-      </div>
-
-      {habits.length === 0 && debouncedSearch === '' && (
-        <>
-          <p className="no-habits-text">You don't have any habits yet</p>
-          <p className="no-habits-text">Let's create your first habit</p>
-        </>
-      )}
-
-      {habits.length === 0 && debouncedSearch !== '' && (
-        <p className="no-habits-text">
-          No results found for '{debouncedSearch}'
-        </p>
-      )}
-    </div>
-  );
-}
-
-export default HabitsList;
