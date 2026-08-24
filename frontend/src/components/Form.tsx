@@ -1,15 +1,13 @@
 import { useState, SyntheticEvent } from 'react';
-import api from '../api';
 import { useNavigate, Link } from 'react-router-dom';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 import '../styles/Form.css';
+import { authenticateUser } from '../services/auth.service';
 
 interface FormProps {
-  route: string;
   method: string;
 }
 
-function Form({ route, method }: FormProps) {
+function Form({ method }: FormProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [Loading, setLoading] = useState(false);
@@ -21,14 +19,8 @@ function Form({ route, method }: FormProps) {
     e.preventDefault();
 
     try {
-      const res = await api.post(route, { username, password });
-      if (method === 'login') {
-        localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate('/');
-      } else {
-        navigate('/login');
-      }
+      await authenticateUser({ username, password }, method);
+      navigate('/');
     } catch (error) {
       alert(error);
     } finally {

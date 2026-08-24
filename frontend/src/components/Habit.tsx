@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../assets/delete.png';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
+import { logHabit, deleteLog } from '../services/habit.service';
 
 interface HabitProps {
   habit: IHabit;
@@ -24,26 +24,25 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
     if (!completedToday) {
       const today = new Date().toISOString().split('T')[0];
       try {
-        const res = await api.post('/api/habit-logs/', {
+        const newLogId = await logHabit({
           habit: habit.id,
           completed_at: today,
         });
-        if (res.status === 201) {
-          setCompletedToday(true);
-          setLogId(res.data.id);
-          onUpdate();
-        }
+
+        setCompletedToday(true);
+        setLogId(newLogId);
+        onUpdate();
       } catch (error: unknown) {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
-        alert('Could not log the habit' + errorMessage);
+        alert('Could not log the habit: ' + errorMessage);
       } finally {
         setLoading(false);
       }
     } else {
       try {
-        const res = await api.delete(`/api/habit-logs/${logId}/`);
-        if (res.status === 204) {
+        if (logId !== null) {
+          await deleteLog(logId);
           setCompletedToday(false);
           setLogId(null);
           onUpdate();

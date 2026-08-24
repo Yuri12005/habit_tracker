@@ -1,10 +1,10 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
 import { useDebounce } from '../customHooks/hooks';
 import Habit from './Habit';
+import { fetchHabits, removeHabit } from '../services/habit.service';
 
 function HabitsList() {
   const [habits, setHabits] = useState<IHabit[]>([]);
@@ -17,11 +17,11 @@ function HabitsList() {
 
   const getHabits = async (searchQuery: string = '', page: number = 1) => {
     try {
-      const res = await api.get(`/api/habits/?search=${searchQuery}&p=${page}`);
+      const data = await fetchHabits({ searchQuery, page });
 
-      setHabits(res.data.results);
+      setHabits(data.results);
 
-      setTotalPages(Math.ceil(res.data.count / PAGE_SIZE));
+      setTotalPages(Math.ceil(data.count / PAGE_SIZE));
     } catch (error) {
       console.log(error);
     }
@@ -29,11 +29,9 @@ function HabitsList() {
 
   const deleteHabit = async (id: number) => {
     try {
-      const res = await api.delete(`/api/habits/${id}/`);
-      if (res.status === 204) {
-        alert('Habit deleted!');
-        getHabits(debouncedSearch, currentPage);
-      }
+      await removeHabit(id);
+      alert('Habit deleted!');
+      getHabits(debouncedSearch, currentPage);
     } catch (error) {
       alert('Error occured' + error);
     }

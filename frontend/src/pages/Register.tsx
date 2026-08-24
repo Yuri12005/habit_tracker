@@ -9,7 +9,7 @@ function Register() {
         <p className="text-paragraph">Achieve your goals one day at a time</p>
       </div>
       <div className="background-form">
-        <Form route="/api/user/register/" method="register" />
+        <Form method="register" />
       </div>
     </div>
   );

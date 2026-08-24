@@ -1,8 +1,8 @@
 import { useState, SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IHabit } from '../types/habit.types';
-import api from '../api';
 import '../styles/HabitForm.css';
+import { createHabit, updateHabit } from '../services/habit.service';
 
 interface HabitFormProps {
   method: string;
@@ -20,28 +20,21 @@ export default function HabitForm({ method, habit }: HabitFormProps) {
   const handleSubmit = async (e: SyntheticEvent) => {
     setLoading(true);
     e.preventDefault();
-    if (method === 'Create') {
-      try {
-        const res = await api.post('/api/habits/', { title, color });
-        if (res.status === 201) {
-          navigate('/');
-        }
-      } catch (error) {
-        alert(error);
-      } finally {
-        setLoading(false);
+    try {
+      if (method === 'Create') {
+        await createHabit({ title, color });
+      } else if (method === 'Update' && habit) {
+        await updateHabit({ title, color }, habit.id);
+      } else {
+        throw new Error('Invalid method or missing habit data');
       }
-    } else if (method === 'Update' && habit) {
-      try {
-        await api.put(`/api/habits/${habit.id}/`, { title, color });
-        navigate('/');
-      } catch (error) {
-        alert(error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      alert('Error occured');
+
+      navigate('/');
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      alert('Error occurred: ' + errorMessage);
+    } finally {
       setLoading(false);
     }
   };

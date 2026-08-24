@@ -14,7 +14,7 @@ function Login() {
         <p className="text-paragraph">Ready to achieve your goals?</p>
       </div>
       <div className="background-form">
-        <Form route="/api/token/" method="login" />
+        <Form method="login" />
       </div>
     </div>
   );
