@@ -21,7 +21,7 @@ class HabitSerializer(serializers.ModelSerializer):
     today_log_id = serializers.SerializerMethodField()
     class Meta:
         model = Habit
-        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user', 'current_streak', 'today_log_id']
+        fields = ['id', 'title', 'color', 'created_at', 'is_active', 'user', 'current_streak', 'today_log_id', 'end_date']
 
         extra_kwargs = {
             'id': {'read_only' : True},

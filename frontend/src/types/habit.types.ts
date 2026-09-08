@@ -7,4 +7,5 @@ export interface IHabit {
   user: string;
   current_streak: number;
   today_log_id?: number | null;
+  end_date: string | null;
 }

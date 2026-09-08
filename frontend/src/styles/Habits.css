@@ -124,11 +124,39 @@
   margin-left: 16px;
 }
 
+.date-container {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  margin-left: 32px;
+  margin-right: 32px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.habit-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #4b5563;
+  background-color: #e5e7eb;
+  padding: 4px 10px;
+  width: fit-content;
+  border-radius: 8px;
+  width: 80px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 .habit-streak {
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
   margin-right: 16px;
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .habit-log-button,

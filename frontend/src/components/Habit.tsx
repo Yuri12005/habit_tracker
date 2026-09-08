@@ -11,6 +11,26 @@ interface HabitProps {
   onUpdate: () => void;
 }
 
+const dateFormatter = new Intl.DateTimeFormat('en-Us', {
+  month: 'short',
+  day: 'numeric',
+});
+
+const parseBackendDate = (dateStr: string) => {
+  return new Date(dateStr);
+};
+
+const formatDateSafely = (dateStr?: string | null, fallback: string = '-') => {
+  if (!dateStr) return fallback;
+
+  try {
+    return dateFormatter.format(parseBackendDate(dateStr));
+  } catch (error) {
+    console.error('Error in formatting date:', dateStr, error);
+    return fallback;
+  }
+};
+
 export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const [completedToday, setCompletedToday] = useState(
     habit.today_log_id ? true : false
@@ -18,6 +38,9 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const [loading, setLoading] = useState(false);
   const [logId, setLogId] = useState(habit.today_log_id || null);
   const navigate = useNavigate();
+
+  const formattedCreatedDate = formatDateSafely(habit.created_at, 'No date');
+  const formattedEndDate = formatDateSafely(habit.end_date, '-');
 
   const handleLogHabit = async () => {
     setLoading(true);
@@ -75,6 +98,11 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
       <p className="habit-title" style={{ color: habit.color }}>
         {habit.title}
       </p>
+      <div className="date-container">
+        <p className="habit-date">{formattedCreatedDate}</p>
+        <p>&mdash;</p>
+        <p className="habit-date">{formattedEndDate}</p>
+      </div>
       <p className="habit-streak" title="Habit streak">
         {habit.current_streak}
       </p>

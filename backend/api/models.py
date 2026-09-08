@@ -13,6 +13,7 @@ class Habit(models.Model):
     title = models.CharField(max_length=100)
     color = models.CharField(choices=HabitColor.choices, max_length=10, default=HabitColor.BLUE)
     created_at = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default = True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habits')
     

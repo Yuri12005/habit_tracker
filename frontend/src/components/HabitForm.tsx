@@ -1,8 +1,10 @@
 import { useState, SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IHabit } from '../types/habit.types';
-import '../styles/HabitForm.css';
 import { createHabit, updateHabit } from '../services/habit.service';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../styles/HabitForm.css';
 
 interface HabitFormProps {
   method: string;
@@ -12,19 +14,36 @@ interface HabitFormProps {
 export default function HabitForm({ method, habit }: HabitFormProps) {
   const [title, setTitle] = useState(habit ? habit.title : '');
   const [color, setColor] = useState(habit ? habit.color : 'red');
+  const [endDate, setEndDate] = useState<Date | null>(
+    habit?.end_date ? new Date(habit.end_date) : null
+  );
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const header = method === 'Create' ? 'Create habit' : 'Update habit';
 
+  const addDays = (days: number) => {
+    const baseDate = endDate ? new Date(endDate) : new Date();
+    baseDate.setDate(baseDate.getDate() + days);
+    setEndDate(new Date(baseDate.getTime()));
+  };
+
   const handleSubmit = async (e: SyntheticEvent) => {
     setLoading(true);
     e.preventDefault();
+
+    const formattedEndDate = endDate
+      ? endDate.toLocaleDateString('en-CA')
+      : null;
+
     try {
       if (method === 'Create') {
-        await createHabit({ title, color });
+        await createHabit({ title, color, end_date: formattedEndDate });
       } else if (method === 'Update' && habit) {
-        await updateHabit({ title, color }, habit.id);
+        await updateHabit(
+          { title, color, end_date: formattedEndDate },
+          habit.id
+        );
       } else {
         throw new Error('Invalid method or missing habit data');
       }
@@ -72,6 +91,45 @@ export default function HabitForm({ method, habit }: HabitFormProps) {
           <option value="orange">Orange</option>
           <option value="darkgreen">Dark green</option>
         </select>
+        <label className="form-label">End date (optional)</label>
+        <div className="date-form-container">
+          <DatePicker
+            selected={endDate}
+            onChange={(date: Date | null) => setEndDate(date)}
+            className="date-picker"
+            minDate={new Date()}
+            placeholderText="Choose end date"
+            dateFormat="dd/MM/yyyy"
+            isClearable
+          />
+          <button
+            className="date-button"
+            type="button"
+            onClick={() => {
+              addDays(7);
+            }}
+          >
+            + 1 week
+          </button>
+          <button
+            className="date-button"
+            type="button"
+            onClick={() => {
+              addDays(30);
+            }}
+          >
+            + 30 days
+          </button>
+          <button
+            className="date-button"
+            type="button"
+            onClick={() => {
+              addDays(90);
+            }}
+          >
+            + 90 days
+          </button>
+        </div>
         <div className="button-form-container">
           <button
             className="create-form-button"

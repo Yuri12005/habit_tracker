@@ -87,3 +87,60 @@
 .return-form-button:hover {
   background-color: #e4e4e4;
 }
+
+.date-form-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.date-picker {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding-left: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease-in-out;
+}
+
+.date-picker:focus {
+  border-color: #3b28cc;
+  box-shadow: 0 0 0 3px rgba(59, 40, 204, 0.15);
+  outline: none;
+}
+
+.date-picker::placeholder {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.date-button {
+  flex-shrink: 0;
+  width: 75px;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.date-button:hover {
+  background-color: #f3f4f6;
+}

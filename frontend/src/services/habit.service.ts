@@ -13,6 +13,7 @@ interface PaginationData {
 interface HabitData {
   title: string;
   color: string;
+  end_date: string | null;
 }
 
 export const logHabit = async (data: LogData) => {
@@ -35,12 +36,15 @@ export const removeHabit = async (id: number) => {
   return true;
 };
 
-export const createHabit = async ({ title, color }: HabitData) => {
-  await api.post('/api/habits/', { title, color });
+export const createHabit = async ({ title, color, end_date }: HabitData) => {
+  await api.post('/api/habits/', { title, color, end_date });
   return true;
 };
 
-export const updateHabit = async ({ title, color }: HabitData, id: number) => {
-  await api.put(`/api/habits/${id}/`, { title, color });
+export const updateHabit = async (
+  { title, color, end_date }: HabitData,
+  id: number
+) => {
+  await api.put(`/api/habits/${id}/`, { title, color, end_date });
   return true;
 };
