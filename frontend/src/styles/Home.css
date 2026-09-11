@@ -25,6 +25,7 @@
   font-weight: 500;
   margin-left: 12px;
   text-transform: capitalize;
+  flex: 1;
 }
 
 .logout-button {
@@ -51,4 +52,36 @@
 .logout-button:active {
   transform: scale(0.96);
   box-shadow: none;
+}
+
+.notification-button {
+  background-color: transparent;
+  position: relative;
+  display: inline-block;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+  margin-right: 15px;
+  transition: all 0.2s ease;
+}
+
+.notification-button:hover {
+  opacity: 0.8;
+}
+
+.count-style {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 25%;
+  background: red;
+  color: white;
+  font-size: 11px;
 }

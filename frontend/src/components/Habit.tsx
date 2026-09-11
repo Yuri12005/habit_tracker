@@ -4,6 +4,7 @@ import deleteIcon from '../assets/delete.png';
 import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
 import { logHabit, deleteLog } from '../services/habit.service';
+import { useNotificationStore } from '../store/notificationStore';
 
 interface HabitProps {
   habit: IHabit;
@@ -37,6 +38,9 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   );
   const [loading, setLoading] = useState(false);
   const [logId, setLogId] = useState(habit.today_log_id || null);
+  const decrement = useNotificationStore((state) => state.decrement);
+  const increment = useNotificationStore((state) => state.increment);
+
   const navigate = useNavigate();
 
   const formattedCreatedDate = formatDateSafely(habit.created_at, 'No date');
@@ -54,6 +58,7 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
 
         setCompletedToday(true);
         setLogId(newLogId);
+        decrement();
         onUpdate();
       } catch (error: unknown) {
         const errorMessage =
@@ -68,6 +73,7 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
           await deleteLog(logId);
           setCompletedToday(false);
           setLogId(null);
+          increment();
           onUpdate();
         }
       } catch (error: unknown) {

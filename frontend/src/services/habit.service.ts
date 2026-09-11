@@ -48,3 +48,8 @@ export const updateHabit = async (
   await api.put(`/api/habits/${id}/`, { title, color, end_date });
   return true;
 };
+
+export const getPendingHabitsCount = async () => {
+  const res = await api.get('/api/habits/pending-count/');
+  return res.data.count;
+};

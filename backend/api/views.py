@@ -4,8 +4,11 @@ from rest_framework import generics, filters
 from .serializers import UserSerializer, HabitSerializer, HabitLogSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Habit, HabitLog
 from .pagination import CustomPagination
+from django.utils import timezone
 
 class HabitListCreate(generics.ListCreateAPIView):
     serializer_class = HabitSerializer
@@ -58,6 +61,16 @@ class HabitLogDelete(generics.DestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return HabitLog.objects.filter(habit__user = user, habit__is_active = True)
+
+class PendingHabitsCountView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = self.request.user
+        today = timezone.now().date()
+
+        count  = Habit.objects.filter(user = user, is_active = True).exclude(logs__completed_at = today).count()
+
+        return Response({'count' : count}) 
     
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
