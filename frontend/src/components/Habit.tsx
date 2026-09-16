@@ -5,32 +5,17 @@ import '../styles/Habits.css';
 import { IHabit } from '../types/habit.types';
 import { logHabit, deleteLog } from '../services/habit.service';
 import { useNotificationStore } from '../store/notificationStore';
+import {
+  formatDateSafely,
+  isDeadlineWithinFiveDays,
+  isExpired,
+} from '../utils/habit-functions';
 
 interface HabitProps {
   habit: IHabit;
   onDelete: (id: number) => void;
   onUpdate: () => void;
 }
-
-const dateFormatter = new Intl.DateTimeFormat('en-Us', {
-  month: 'short',
-  day: 'numeric',
-});
-
-const parseBackendDate = (dateStr: string) => {
-  return new Date(dateStr);
-};
-
-const formatDateSafely = (dateStr?: string | null, fallback: string = '-') => {
-  if (!dateStr) return fallback;
-
-  try {
-    return dateFormatter.format(parseBackendDate(dateStr));
-  } catch (error) {
-    console.error('Error in formatting date:', dateStr, error);
-    return fallback;
-  }
-};
 
 export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const [completedToday, setCompletedToday] = useState(
@@ -40,8 +25,9 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const [logId, setLogId] = useState(habit.today_log_id || null);
   const decrement = useNotificationStore((state) => state.decrement);
   const increment = useNotificationStore((state) => state.increment);
-
   const navigate = useNavigate();
+  const isDeadline = isDeadlineWithinFiveDays(habit.end_date);
+  const expired = isExpired(habit.end_date);
 
   const formattedCreatedDate = formatDateSafely(habit.created_at, 'No date');
   const formattedEndDate = formatDateSafely(habit.end_date, '-');
@@ -58,7 +44,9 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
 
         setCompletedToday(true);
         setLogId(newLogId);
-        decrement();
+        if (habit.current_streak > 0 || isDeadline) {
+          decrement();
+        }
         onUpdate();
       } catch (error: unknown) {
         const errorMessage =
@@ -73,7 +61,9 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
           await deleteLog(logId);
           setCompletedToday(false);
           setLogId(null);
-          increment();
+          if (habit.current_streak > 1 || isDeadline) {
+            increment();
+          }
           onUpdate();
         }
       } catch (error: unknown) {
@@ -116,7 +106,7 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
         className="habit-log-button"
         title="Log habit"
         onClick={handleLogHabit}
-        disabled={loading}
+        disabled={loading || expired}
       >
         {completedToday ? '❤️' : '🩶'}
       </button>

@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import CreateHabit from './pages/CreateHabit';
 import EditHabit from './pages/EditHabit';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotificationList from './components/NotificationList';
 
 function Logout() {
   localStorage.clear();
@@ -26,6 +27,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationList />
             </ProtectedRoute>
           }
         />

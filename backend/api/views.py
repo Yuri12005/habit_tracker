@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from .models import Habit, HabitLog
 from .pagination import CustomPagination
 from django.utils import timezone
+from datetime import timedelta
 
 class HabitListCreate(generics.ListCreateAPIView):
     serializer_class = HabitSerializer
@@ -67,10 +68,39 @@ class PendingHabitsCountView(APIView):
     def get(self, request):
         user = self.request.user
         today = timezone.now().date()
+        five_days_later = today + timedelta(days=5)
+        yesterday = today - timedelta(days=1)
 
-        count  = Habit.objects.filter(user = user, is_active = True).exclude(logs__completed_at = today).count()
+        base_query = Habit.objects.filter(user=user, is_active=True).exclude(logs__completed_at=today)
 
-        return Response({'count' : count}) 
+        streak =  base_query.filter(logs__completed_at = yesterday)
+
+        deadline = base_query.filter(end_date__isnull = False, end_date__lte = five_days_later, end_date__gte=today)
+
+        combined_query = (streak|deadline).distinct()
+        
+        return Response({'count' : combined_query.count()}) 
+
+class NotificationHabitList(generics.ListAPIView):
+    serializer_class = HabitSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        today = timezone.now().date()
+        five_days_later = today + timedelta(days=5)
+        yesterday = today - timedelta(days=1)
+
+        base_query = Habit.objects.filter(user=user, is_active=True).exclude(logs__completed_at=today)
+
+        streak =  base_query.filter(logs__completed_at = yesterday)
+
+        deadline = base_query.filter(end_date__isnull = False, end_date__lte = five_days_later, end_date__gte=today)
+
+        combined_query = (streak|deadline).distinct().order_by('-created_at')
+        return combined_query
     
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()

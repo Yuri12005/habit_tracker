@@ -4,6 +4,7 @@ from . import views
 urlpatterns =[
     path('habits/pending-count/', views.PendingHabitsCountView.as_view(), name = 'pending-count'),
     path('habits/', views.HabitListCreate.as_view(), name = 'habit-list'),
+    path('habits/notification/', views.NotificationHabitList.as_view(), name = 'notification-list'),
     path('habits/<int:pk>/', views.HabitDetail.as_view(), name = 'habit-detail'),
     path('habit-logs/', views.HabitLogListCreate.as_view(), name = 'habit-log'),
     path('habit-logs/<int:pk>/', views.HabitLogDelete.as_view(), name = 'habit-log-delete'),

@@ -53,3 +53,8 @@ export const getPendingHabitsCount = async () => {
   const res = await api.get('/api/habits/pending-count/');
   return res.data.count;
 };
+
+export const fetchNotifications = async (page: number) => {
+  const res = await api.get(`/api/habits/notification/?p=${page}`);
+  return res.data;
+};
