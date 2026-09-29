@@ -10,6 +10,7 @@ import {
   isDeadlineWithinFiveDays,
   isExpired,
 } from '../utils/habit-functions';
+import DeleteModal from './deleteModal';
 
 interface HabitProps {
   habit: IHabit;
@@ -28,13 +29,17 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   const navigate = useNavigate();
   const isDeadline = isDeadlineWithinFiveDays(habit.end_date);
   const expired = isExpired(habit.end_date);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formattedCreatedDate = formatDateSafely(habit.created_at, 'No date');
   const formattedEndDate = formatDateSafely(habit.end_date, '-');
 
   const handleLogHabit = async () => {
+    const previousCompletedStatus = completedToday;
+    const previousLogId = logId;
+    setCompletedToday(!previousCompletedStatus);
     setLoading(true);
-    if (!completedToday) {
+    if (!previousCompletedStatus) {
       const today = new Date().toISOString().split('T')[0];
       try {
         const newLogId = await logHabit({
@@ -42,13 +47,13 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
           completed_at: today,
         });
 
-        setCompletedToday(true);
         setLogId(newLogId);
         if (habit.current_streak > 0 || isDeadline) {
           decrement();
         }
         onUpdate();
       } catch (error: unknown) {
+        setCompletedToday(previousCompletedStatus);
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
         alert('Could not log the habit: ' + errorMessage);
@@ -57,8 +62,8 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
       }
     } else {
       try {
-        if (logId !== null) {
-          await deleteLog(logId);
+        if (previousLogId !== null) {
+          await deleteLog(previousLogId);
           setCompletedToday(false);
           setLogId(null);
           if (habit.current_streak > 1 || isDeadline) {
@@ -67,6 +72,7 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
           onUpdate();
         }
       } catch (error: unknown) {
+        setCompletedToday(previousCompletedStatus);
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
         alert('Could not remove log of the habit' + errorMessage);
@@ -83,41 +89,50 @@ export default function Habit({ habit, onDelete, onUpdate }: HabitProps) {
   };
 
   return (
-    <div className="single-habit">
-      <button
-        className="update-habit-button"
-        title="Update habit"
-        onClick={goToUpdate}
-      >
-        ✏️
-      </button>
-      <p className="habit-title" style={{ color: habit.color }}>
-        {habit.title}
-      </p>
-      <div className="date-container">
-        <p className="habit-date">{formattedCreatedDate}</p>
-        <p>&mdash;</p>
-        <p className="habit-date">{formattedEndDate}</p>
+    <>
+      <div className="single-habit">
+        <button
+          className="update-habit-button"
+          title="Update habit"
+          onClick={goToUpdate}
+        >
+          ✏️
+        </button>
+        <p className="habit-title" style={{ color: habit.color }}>
+          {habit.title}
+        </p>
+        <div className="date-container">
+          <p className="habit-date">{formattedCreatedDate}</p>
+          <p>&mdash;</p>
+          <p className="habit-date">{formattedEndDate}</p>
+        </div>
+        <p className="habit-streak" title="Habit streak">
+          {habit.current_streak}
+        </p>
+        <button
+          className="habit-log-button"
+          title="Log habit"
+          onClick={handleLogHabit}
+          disabled={loading || expired}
+        >
+          {completedToday ? '❤️' : '🩶'}
+        </button>
+        <button
+          className="delete-habit-button"
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >
+          <img src={deleteIcon} alt="Delete habit" />
+        </button>
       </div>
-      <p className="habit-streak" title="Habit streak">
-        {habit.current_streak}
-      </p>
-      <button
-        className="habit-log-button"
-        title="Log habit"
-        onClick={handleLogHabit}
-        disabled={loading || expired}
-      >
-        {completedToday ? '❤️' : '🩶'}
-      </button>
-      <button
-        className="delete-habit-button"
-        onClick={() => {
-          onDelete(habit.id);
-        }}
-      >
-        <img src={deleteIcon} alt="Delete habit" />
-      </button>
-    </div>
+      {isModalOpen && (
+        <DeleteModal
+          onDelete={onDelete}
+          habit={habit}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+    </>
   );
 }

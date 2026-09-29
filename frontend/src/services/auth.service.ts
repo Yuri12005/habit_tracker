@@ -4,6 +4,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
 
 interface AuthData {
   username: string;
+  email?: string;
   password: string;
 }
 
@@ -65,4 +66,12 @@ export const verifyAuth = async () => {
     localStorage.clear();
     return false;
   }
+};
+
+export const passReset = async (email: string) => {
+  await api.post('/api/password-reset/', { email });
+};
+
+export const confirmPassReset = async (token: string, password: string) => {
+  await api.post('/api/password-reset/confirm/', { token, password });
 };

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ACCESS_TOKEN } from './constants';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,6 +14,22 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    // Якщо запит успішний (статуси 2xx), просто повертаємо дані далі
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem(ACCESS_TOKEN);
+      localStorage.removeItem(REFRESH_TOKEN);
+
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );

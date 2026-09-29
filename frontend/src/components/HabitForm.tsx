@@ -23,7 +23,7 @@ export default function HabitForm({ method, habit }: HabitFormProps) {
   const header = method === 'Create' ? 'Create habit' : 'Update habit';
 
   const addDays = (days: number) => {
-    const baseDate = endDate ? new Date(endDate) : new Date();
+    const baseDate = new Date();
     baseDate.setDate(baseDate.getDate() + days);
     setEndDate(new Date(baseDate.getTime()));
   };
@@ -136,7 +136,7 @@ export default function HabitForm({ method, habit }: HabitFormProps) {
             type="submit"
             disabled={loading}
           >
-            {method.toUpperCase()}
+            {loading ? <span className="spinner"></span> : method.toUpperCase()}
           </button>
           <button
             className="return-form-button"

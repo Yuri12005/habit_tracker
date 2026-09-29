@@ -7,6 +7,8 @@ import CreateHabit from './pages/CreateHabit';
 import EditHabit from './pages/EditHabit';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationList from './components/NotificationList';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function Logout() {
   localStorage.clear();
@@ -40,6 +42,8 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route
           path="/create-habit"

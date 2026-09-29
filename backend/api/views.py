@@ -6,10 +6,23 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Habit, HabitLog
 from .pagination import CustomPagination
 from django.utils import timezone
 from datetime import timedelta
+import time
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        username_field = self.username_field
+        attrs[username_field] = attrs.get(username_field, '').lower()
+        
+        return super().validate(attrs)
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class HabitListCreate(generics.ListCreateAPIView):
     serializer_class = HabitSerializer

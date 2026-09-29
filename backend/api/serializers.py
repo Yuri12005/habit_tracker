@@ -4,11 +4,30 @@ from .models import Habit, HabitLog
 from datetime import date, timedelta
 
 class UserSerializer(serializers.ModelSerializer):
+    def validate_username(self, value):
+        lower_username = value.lower()
+        if User.objects.filter(username=lower_username).exists():
+            raise serializers.ValidationError("Username already exists.")
+            
+        return lower_username
+
+    def validate_email(self, value):
+        lower_email = value.lower()
+        if User.objects.filter(email=lower_email).exists():
+            raise serializers.ValidationError("Email already exists.")
+
+        return lower_email
+    
     class Meta:
         model = User
-        fields = ['id', 'username', 'password']
+        fields = ['id', 'username', 'email', 'password']
 
         extra_kwargs = {
+            'email' : {'required' : True,
+                       'allow_blank' : False,
+                       'error_messages' : {'required' : 'Email is required.',
+                                           'blank' : 'Email is required.',
+                                           'invalid' : 'Enter a valid email address.'}},
             'password' : {'write_only' : True}
         }
 
